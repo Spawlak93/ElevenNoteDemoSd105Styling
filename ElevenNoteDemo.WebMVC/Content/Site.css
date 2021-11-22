@@ -1,0 +1,61 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.noteboard{
+    border: 1px solid black;
+    display: block;
+    padding: 1em 1em;
+}
+
+.note-container{
+    padding: 1em 1em;
+}
+
+.note-card {
+    border: 1px solid black;
+    background-color: #FEFF9C;
+    min-height: 10em;
+    padding: 0 .5em;
+}
+
+.note-header {
+    border-bottom: solid blue;
+}
+
+.note-content {
+    margin-top: .75em;
+    text-align: center;
+}
+
+.note-info {
+    text-align:center;
+}
+
+.renote-controler {
+    position:absolute;
+    bottom: 1em;
+    right: 2em;
+}
+

@@ -1,0 +1,152 @@
+﻿@model IEnumerable<ElevenNoteDemo.Models.NoteListItem>
+
+@{
+    ViewBag.Title = "Notes";
+    SelectList Categories = ViewBag.CategoryIds;
+}
+
+<h2>Notes</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#all">All Notes</a></li>
+    <li><a data-toggle="tab" href="#fav">Starred</a></li>
+    @* Categories *@
+    @foreach (var category in (SelectList)ViewBag.CategoryIds)
+    {
+        <li><a data-toggle="tab" href="#@category.Value">@category.Text</a></li>
+    }
+</ul>
+
+<div class="noteboard row">
+    <div class="tab-content">
+
+        <div id="all" class="tab-pane fade in active">
+
+            @foreach (var item in Model)
+            {
+                <div class="col-md-3 note-container">
+                    <div class="note-card">
+                        <div class="note-header text-center">
+                            @Html.ActionLink(item.Title, "Details", new { id = item.NoteId })
+                            @Html.DisplayFor(modelItem => item.IsStarred, new { id = item.NoteId })
+                        </div>
+                        <div note-body>
+                            <div class="note-content">
+                                @Html.DisplayFor(modelItem => item.Content)
+                            </div>
+                            <div class="note-info">
+                                @Html.DisplayFor(modelItem => item.CreatedUtc)
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+
+                            </div>
+                            <div class="renote-controler">
+                                @Html.ActionLink("Edit", "Edit", new { id = item.NoteId })
+                                @Html.ActionLink("Delete", "Delete", new { id = item.NoteId })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div id="fav" class="tab-pane fade">
+            @foreach (var item in Model)
+            {
+                if (item.IsStarred)
+                {
+                    <div class="col-md-3 note-container">
+                        <div class="note-card">
+                            <div class="note-header text-center">
+                                @Html.ActionLink(item.Title, "Details", new { id = item.NoteId })
+                                @Html.DisplayFor(modelItem => item.IsStarred, new { id = item.NoteId })
+                            </div>
+                            <div note-body>
+                                <div class="note-content">
+                                    @Html.DisplayFor(modelItem => item.Content)
+                                </div>
+                                <div class="note-info">
+                                    @Html.DisplayFor(modelItem => item.CreatedUtc)
+                                    @Html.DisplayFor(modelItem => item.CategoryName)
+
+                                </div>
+                                <div class="renote-controler">
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.NoteId })
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.NoteId })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+        </div>
+
+        @foreach (var category in (SelectList)ViewBag.CategoryIds)
+        {
+    <div id="@category.Value" class="tab-pane fade">
+        @foreach (var item in Model.Where(c => c.CategoryId.ToString() == category.Value))
+        {
+            <div class="col-md-3 note-container">
+                <div class="note-card">
+                    <div class="note-header text-center">
+                        @Html.ActionLink(item.Title, "Details", new { id = item.NoteId })
+                        @Html.DisplayFor(modelItem => item.IsStarred, new { id = item.NoteId })
+                    </div>
+                    <div note-body>
+                        <div class="note-content">
+                            @Html.DisplayFor(modelItem => item.Content)
+                        </div>
+                        <div class="note-info">
+                            @Html.DisplayFor(modelItem => item.CreatedUtc)
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+
+                        </div>
+                        <div class="renote-controler">
+                            @Html.ActionLink("Edit", "Edit", new { id = item.NoteId })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.NoteId })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+        }
+
+
+        @* Categories *@
+
+    </div>
+</div>
+
+
+@section scripts {
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+            $("i[data-toggle='star']")
+                .css({ "cursor": "pointer" })
+                .click(function (e) {
+                    var target = $(e.target);
+                    var noteId = target.attr("data-id");
+                    var starSet = target.hasClass("glyphicon-star");
+
+                    $.ajax({
+                        method: starSet ? "DELETE" : "PUT",
+                        url: "/api/note/" + noteId + "/star",
+                        data: null
+                    })
+                        .done(function (r) {
+                            target.removeClass();
+                            target.addClass("glyphicon " + (starSet ? "glyphicon-star-empty" : "glyphicon-star"));
+                        })
+                        .fail(function (r) {
+                            alert("Failed to change star status");
+                        });
+                });
+        });
+    </script>
+}
